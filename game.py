@@ -8,7 +8,7 @@ SCREEN_HEIGHT = 600
 BLOCK_SIZE = 40
 PLAYER_SIZE = 40
 FPS = 60
-MAX_BLOCKS_WATCH = 5 
+MAX_BLOCKS_WATCH = 10
 
 class FallingBlocksGame:
     def __init__(self):
@@ -88,14 +88,18 @@ class FallingBlocksGame:
         return self._get_state(), reward, self.done
 
     def render(self):
-        # Отрисовку оставляем только для визуального контроля (можно выключать при обучении)
         self.screen.fill((30, 30, 30)) 
+        # Теперь pygame доступен во всей функции
         pygame.draw.rect(self.screen, (0, 200, 255), (self.player_x, self.player_y, PLAYER_SIZE, PLAYER_SIZE))
         for block in self.blocks:
             pygame.draw.rect(self.screen, (255, 80, 80), (block[0], block[1], BLOCK_SIZE, BLOCK_SIZE))
         
         pygame.display.flip()
         self.clock.tick(FPS)
+
+        # Захватываем кадр для GIF
+        img_array = pygame.surfarray.array3d(self.screen).swapaxes(0, 1)
+        return img_array
 
 if __name__ == "__main__":
     game = FallingBlocksGame()
